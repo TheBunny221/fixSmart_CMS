@@ -199,9 +199,15 @@ const MaintenanceTasks: React.FC = () => {
   };
 
   // Handle navigation
-  const handleNavigate = (address: string) => {
-    const encodedAddress = encodeURIComponent(address);
-    window.open(`https://maps.google.com/?q=${encodedAddress}`, "_blank");
+  const handleNavigate = (task: any) => {
+    if (task.latitude && task.longitude) {
+      // Use exact coordinates if available
+      window.open(`https://maps.google.com/?q=${task.latitude},${task.longitude}`, "_blank");
+    } else {
+      // Fallback to address search
+      const encodedAddress = encodeURIComponent(task.address);
+      window.open(`https://maps.google.com/?q=${encodedAddress}`, "_blank");
+    }
   };
 
   // Handle photo view
