@@ -87,6 +87,8 @@ model User {
   sentMessages      Message[]          @relation("SentBy")
   receivedMessages  Message[]          @relation("ReceivedBy")
   otpSessions       OTPSession[]
+  addedMaterials    Material[]
+  uploadedPhotos    ComplaintPhoto[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
