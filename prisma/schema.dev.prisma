@@ -140,6 +140,8 @@ model Complaint {
   attachments     Attachment[]
   notifications   Notification[]
   messages        Message[]
+  materials       Material[]
+  photos          ComplaintPhoto[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
