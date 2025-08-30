@@ -153,6 +153,35 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
             </>
           )}
 
+          {/* Maintenance Team Actions */}
+          {isMaintenanceTeam && (
+            <>
+              {complaint.status === "ASSIGNED" && (
+                <Button
+                  size="sm"
+                  onClick={() => onShowUpdateModal?.(complaint)}
+                  title="Start Work"
+                  className="text-orange-600 hover:text-orange-700"
+                >
+                  <Clock className="h-3 w-3 mr-1" />
+                  Start
+                </Button>
+              )}
+
+              {complaint.status === "IN_PROGRESS" && (
+                <Button
+                  size="sm"
+                  onClick={() => onShowUpdateModal?.(complaint)}
+                  title="Mark Resolved"
+                  className="text-green-600 hover:text-green-700"
+                >
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Complete
+                </Button>
+              )}
+            </>
+          )}
+
           {/* More Actions Dropdown */}
           {canManageComplaint && (
             <DropdownMenu>
