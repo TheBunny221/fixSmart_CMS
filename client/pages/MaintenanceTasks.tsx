@@ -218,6 +218,12 @@ const MaintenanceTasks: React.FC = () => {
     window.open(photoUrl, "_blank");
   };
 
+  // Handle photo upload
+  const handlePhotoUpload = (task: any) => {
+    setSelectedTaskForPhotos(task);
+    setIsPhotoUploadOpen(true);
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "HIGH":
