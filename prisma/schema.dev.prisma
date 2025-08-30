@@ -99,6 +99,8 @@ model Complaint {
   landmark        String?
   address         String?
   coordinates     String?           // JSON string for lat/lng
+  latitude        Float?            // Explicit latitude field
+  longitude       Float?            // Explicit longitude field
   
   // Contact Information
   contactName     String?
