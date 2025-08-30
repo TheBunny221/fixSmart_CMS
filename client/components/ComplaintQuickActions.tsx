@@ -183,7 +183,7 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
           )}
 
           {/* More Actions Dropdown */}
-          {canManageComplaint && (
+          {(canManageComplaint || isMaintenanceTeam) && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline">
