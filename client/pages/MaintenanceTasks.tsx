@@ -612,6 +612,21 @@ const MaintenanceTasks: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Photo Upload Modal */}
+      {selectedTaskForPhotos && (
+        <PhotoUploadModal
+          isOpen={isPhotoUploadOpen}
+          onClose={() => {
+            setIsPhotoUploadOpen(false);
+            setSelectedTaskForPhotos(null);
+          }}
+          complaintId={selectedTaskForPhotos.id}
+          onSuccess={() => {
+            refetchComplaints();
+          }}
+        />
+      )}
     </div>
   );
 };
