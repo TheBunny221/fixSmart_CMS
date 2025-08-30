@@ -480,14 +480,25 @@ const MaintenanceTasks: React.FC = () => {
                       <Navigation className="h-3 w-3 mr-1" />
                       Navigate
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleViewPhoto(task.photo)}
-                    >
-                      <Camera className="h-3 w-3 mr-1" />
-                      Photo
-                    </Button>
+                    {task.photo ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewPhoto(task.photo)}
+                      >
+                        <Camera className="h-3 w-3 mr-1" />
+                        View Photo
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePhotoUpload(task)}
+                      >
+                        <Camera className="h-3 w-3 mr-1" />
+                        Add Photo
+                      </Button>
+                    )}
                   </div>
                   <div className="flex space-x-2">
                     {task.status === "ASSIGNED" && (
