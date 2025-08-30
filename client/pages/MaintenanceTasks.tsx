@@ -488,14 +488,23 @@ const MaintenanceTasks: React.FC = () => {
                       Navigate
                     </Button>
                     {task.photo ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleViewPhoto(task.photo)}
-                      >
-                        <Camera className="h-3 w-3 mr-1" />
-                        View Photo
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <Camera className="h-3 w-3 mr-1" />
+                            Photos
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem onClick={() => handleViewPhoto(task.photo)}>
+                            View Existing Photo
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handlePhotoUpload(task)}>
+                            Upload New Photos
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     ) : (
                       <Button
                         variant="outline"
@@ -503,7 +512,7 @@ const MaintenanceTasks: React.FC = () => {
                         onClick={() => handlePhotoUpload(task)}
                       >
                         <Camera className="h-3 w-3 mr-1" />
-                        Add Photo
+                        Add Photos
                       </Button>
                     )}
                   </div>
