@@ -49,8 +49,83 @@ const MaintenanceTasks: React.FC = () => {
   const [resolveComment, setResolveComment] = useState("");
   const [resolvePhoto, setResolvePhoto] = useState<File | null>(null);
 
-  // Sample task data - in real app this would come from API
-  const [tasks, setTasks] = useState([
+  // Fetch complaints assigned to this maintenance team member
+  const {
+    data: complaintsResponse,
+    isLoading,
+    error,
+    refetch: refetchComplaints,
+  } = useGetComplaintsQuery({
+    assignedToId: user?.id,
+    page: 1,
+    limit: 100,
+  });
+
+  const [updateComplaintStatus] = useUpdateComplaintStatusMutation();
+
+  // Extract tasks from API response
+  const tasks = useMemo(() => {
+    if (Array.isArray(complaintsResponse?.data?.complaints)) {
+      return complaintsResponse!.data!.complaints.map((complaint: any) => ({
+        id: complaint.id,
+        title: complaint.title || `${complaint.type} Issue`,
+        location: complaint.area,
+        address: `${complaint.area}${complaint.landmark ? ', ' + complaint.landmark : ''}${complaint.address ? ', ' + complaint.address : ''}`,
+        priority: complaint.priority || "MEDIUM",
+        status: complaint.status,
+        estimatedTime: getPriorityEstimatedTime(complaint.priority),
+        dueDate: complaint.deadline ? new Date(complaint.deadline).toISOString().split('T')[0] : null,
+        isOverdue: complaint.deadline ? new Date(complaint.deadline) < new Date() && !["RESOLVED", "CLOSED"].includes(complaint.status) : false,
+        description: complaint.description,
+        assignedAt: complaint.assignedOn || complaint.submittedOn,
+        resolvedAt: complaint.resolvedOn,
+        photo: complaint.attachments?.[0]?.url || null,
+        latitude: complaint.latitude,
+        longitude: complaint.longitude,
+        complaintId: complaint.complaintId,
+      }));
+    }
+    if (Array.isArray((complaintsResponse as any)?.data)) {
+      return (complaintsResponse as any).data.map((complaint: any) => ({
+        id: complaint.id,
+        title: complaint.title || `${complaint.type} Issue`,
+        location: complaint.area,
+        address: `${complaint.area}${complaint.landmark ? ', ' + complaint.landmark : ''}${complaint.address ? ', ' + complaint.address : ''}`,
+        priority: complaint.priority || "MEDIUM",
+        status: complaint.status,
+        estimatedTime: getPriorityEstimatedTime(complaint.priority),
+        dueDate: complaint.deadline ? new Date(complaint.deadline).toISOString().split('T')[0] : null,
+        isOverdue: complaint.deadline ? new Date(complaint.deadline) < new Date() && !["RESOLVED", "CLOSED"].includes(complaint.status) : false,
+        description: complaint.description,
+        assignedAt: complaint.assignedOn || complaint.submittedOn,
+        resolvedAt: complaint.resolvedOn,
+        photo: complaint.attachments?.[0]?.url || null,
+        latitude: complaint.latitude,
+        longitude: complaint.longitude,
+        complaintId: complaint.complaintId,
+      }));
+    }
+    return [];
+  }, [complaintsResponse]);
+
+  // Helper function to get estimated time based on priority
+  const getPriorityEstimatedTime = (priority: string) => {
+    switch (priority) {
+      case "CRITICAL":
+        return "2-4 hours";
+      case "HIGH":
+        return "4-8 hours";
+      case "MEDIUM":
+        return "1-2 days";
+      case "LOW":
+        return "2-5 days";
+      default:
+        return "1-2 days";
+    }
+  };
+
+  // Remove the static task data array completely
+  const [oldTasksToRemove] = useState([
     {
       id: "1",
       title: "Water Pipeline Repair",
