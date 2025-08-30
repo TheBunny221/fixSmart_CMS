@@ -555,4 +555,8 @@ export const {
   useGetComplaintStatisticsQuery,
   useGetWardDashboardStatisticsQuery,
   useGetWardUsersQuery,
+  useGetComplaintMaterialsQuery,
+  useAddComplaintMaterialMutation,
+  useGetComplaintPhotosQuery,
+  useUploadComplaintPhotosMutation,
 } = complaintsApi;
