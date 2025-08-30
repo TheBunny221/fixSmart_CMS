@@ -154,12 +154,17 @@ const MaintenanceTasks: React.FC = () => {
   });
 
   // Handle task status updates
-  const handleStartWork = (taskId: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, status: "IN_PROGRESS" } : task,
-      ),
-    );
+  const handleStartWork = async (taskId: string) => {
+    try {
+      await updateComplaintStatus({
+        id: taskId,
+        status: "IN_PROGRESS",
+      }).unwrap();
+      refetchComplaints();
+    } catch (error) {
+      console.error("Failed to start work:", error);
+      // You might want to show a toast notification here
+    }
   };
 
   const handleMarkResolved = (task: any) => {
@@ -167,25 +172,29 @@ const MaintenanceTasks: React.FC = () => {
     setIsMarkResolvedOpen(true);
   };
 
-  const submitMarkResolved = () => {
+  const submitMarkResolved = async () => {
     if (selectedTask) {
-      setTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === selectedTask.id
-            ? {
-                ...task,
-                status: "RESOLVED",
-                resolvedAt: new Date().toISOString(),
-                resolveComment,
-                resolvePhoto: resolvePhoto?.name,
-              }
-            : task,
-        ),
-      );
-      setIsMarkResolvedOpen(false);
-      setResolveComment("");
-      setResolvePhoto(null);
-      setSelectedTask(null);
+      try {
+        await updateComplaintStatus({
+          id: selectedTask.id,
+          status: "RESOLVED",
+          remarks: resolveComment,
+        }).unwrap();
+
+        // TODO: Handle photo upload when the photo upload modal is implemented
+        if (resolvePhoto) {
+          console.log("Photo upload would happen here:", resolvePhoto.name);
+        }
+
+        setIsMarkResolvedOpen(false);
+        setResolveComment("");
+        setResolvePhoto(null);
+        setSelectedTask(null);
+        refetchComplaints();
+      } catch (error) {
+        console.error("Failed to mark as resolved:", error);
+        // You might want to show a toast notification here
+      }
     }
   };
 
