@@ -428,7 +428,7 @@ const MaintenanceTasks: React.FC = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleNavigate(task.address)}
+                      onClick={() => handleNavigate(task)}
                     >
                       <Navigation className="h-3 w-3 mr-1" />
                       Navigate
