@@ -230,6 +230,8 @@ export function createApp() {
   app.use("/api/complaint-types", complaintTypeRoutes);
   app.use("/api/system-config", systemConfigRoutes);
   app.use("/api/captcha", captchaRoutes);
+  app.use("/api", materialsRoutes);
+  app.use("/api", complaintPhotosRoutes);
   app.use("/api/guest-otp", guestOtpRoutes);
 
   // Development test routes (only in development)
