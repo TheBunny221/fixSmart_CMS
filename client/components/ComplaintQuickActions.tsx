@@ -191,13 +191,13 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {onShowUpdateModal && (
+                {onShowUpdateModal && (canManageComplaint || isMaintenanceTeam) && (
                   <>
                     <DropdownMenuItem
                       onClick={() => onShowUpdateModal(complaint)}
                     >
                       <Edit className="h-4 w-4 mr-2" />
-                      Update Complaint
+                      {isMaintenanceTeam ? "Update Status" : "Update Complaint"}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </>
