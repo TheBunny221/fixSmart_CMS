@@ -28,6 +28,8 @@ import systemConfigRoutes from "./routes/systemConfigRoutes.js";
 import captchaRoutes from "./routes/captchaRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import guestOtpRoutes from "./routes/guestOtpRoutes.js";
+import materialsRoutes from "./routes/materialsRoutes.js";
+import complaintPhotosRoutes from "./routes/complaintPhotosRoutes.js";
 
 // Import middleware
 import { errorHandler } from "./middleware/errorHandler.js";
