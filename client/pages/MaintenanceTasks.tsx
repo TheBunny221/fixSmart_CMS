@@ -49,6 +49,8 @@ const MaintenanceTasks: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
   const [resolveComment, setResolveComment] = useState("");
   const [resolvePhoto, setResolvePhoto] = useState<File | null>(null);
+  const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
+  const [selectedTaskForPhotos, setSelectedTaskForPhotos] = useState<any>(null);
 
   // Fetch complaints assigned to this maintenance team member
   const {
