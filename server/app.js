@@ -234,6 +234,10 @@ export function createApp() {
   app.use("/api", complaintPhotosRoutes);
   app.use("/api/guest-otp", guestOtpRoutes);
 
+  // Serve uploaded files
+  const uploadsPath = path.join(__dirname, "../uploads");
+  app.use("/uploads", express.static(uploadsPath));
+
   // Development test routes (only in development)
   if (process.env.NODE_ENV !== "production") {
     app.use("/api/test", testRoutes);
