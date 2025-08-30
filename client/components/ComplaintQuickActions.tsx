@@ -80,6 +80,7 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
   const canManageComplaint =
     userRole === "WARD_OFFICER" || userRole === "ADMINISTRATOR";
   const canAssign = userRole === "WARD_OFFICER" || userRole === "ADMINISTRATOR";
+  const isMaintenanceTeam = userRole === "MAINTENANCE_TEAM";
 
   return (
     <>
