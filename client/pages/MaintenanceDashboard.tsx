@@ -47,7 +47,7 @@ const MaintenanceDashboard: React.FC = () => {
     error,
     refetch: refetchComplaints,
   } = useGetComplaintsQuery({
-    assignedTo: user?.id,
+    assignedToId: user?.id, // Use assignedToId instead of assignedTo
     page: 1,
     limit: 100,
   });
