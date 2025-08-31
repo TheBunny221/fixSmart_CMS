@@ -67,7 +67,8 @@ const MaintenanceDashboard: React.FC = () => {
   const dashboardStats = useMemo(() => {
     const assignedTasks = complaints.filter((c: any) => {
       const assigneeId = c.assignedToId || c.assignedTo?.id || c.assignedTo;
-      return assigneeId === user?.id && c.status !== "REGISTERED";
+      const maintenanceTeamId = c.maintenanceTeamId || c.maintenanceTeam?.id;
+      return (assigneeId === user?.id || maintenanceTeamId === user?.id) && c.status !== "REGISTERED";
     });
 
 //   useEffect(() => {
@@ -158,7 +159,8 @@ const MaintenanceDashboard: React.FC = () => {
   const myTasks = useMemo(() => {
     return complaints.filter((c: any) => {
       const assigneeId = c.assignedToId || c.assignedTo?.id || c.assignedTo;
-      return assigneeId === user?.id && c.status !== "REGISTERED";
+      const maintenanceTeamId = c.maintenanceTeamId || c.maintenanceTeam?.id;
+      return (assigneeId === user?.id || maintenanceTeamId === user?.id) && c.status !== "REGISTERED";
     });
   }, [complaints, user?.id]);
 
