@@ -83,8 +83,6 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
       return { role: "WARD_OFFICER" };
     } else if (user?.role === "WARD_OFFICER") {
       return { role: "MAINTENANCE_TEAM" };
-    } else if (user?.role === "MAINTENANCE_TEAM") {
-      return { role: "MAINTENANCE_TEAM" };
     }
     return {};
   };
@@ -226,8 +224,8 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
         priority: formData.priority,
       };
 
-      // For ward officers and maintenance team, use maintenanceTeamId
-      if (user?.role === "WARD_OFFICER" || user?.role === "MAINTENANCE_TEAM") {
+      // For ward officers, use maintenanceTeamId
+      if (user?.role === "WARD_OFFICER") {
         if (
           formData.maintenanceTeamId &&
           formData.maintenanceTeamId !== "none"
@@ -360,8 +358,6 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
       return "Select Ward Officer";
     } else if (user?.role === "WARD_OFFICER") {
       return "Select Maintenance Team Member";
-    } else if (user?.role === "MAINTENANCE_TEAM") {
-      return "Reassign to Team Member";
     }
     return "Select User";
   };
@@ -604,12 +600,12 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
               {/* User Selection */}
               <Select
                 value={
-                  user?.role === "WARD_OFFICER" || user?.role === "MAINTENANCE_TEAM"
+                  user?.role === "WARD_OFFICER"
                     ? formData.maintenanceTeamId
                     : formData.assignedToId
                 }
                 onValueChange={(value) => {
-                  if (user?.role === "WARD_OFFICER" || user?.role === "MAINTENANCE_TEAM") {
+                  if (user?.role === "WARD_OFFICER") {
                     setFormData((prev) => ({
                       ...prev,
                       maintenanceTeamId: value,
