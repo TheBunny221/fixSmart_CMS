@@ -263,6 +263,24 @@ const MaintenanceDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Debug Info - Development Only */}
+      {process.env.NODE_ENV === "development" && (
+        <Card className="bg-yellow-50 border-yellow-200">
+          <CardHeader>
+            <CardTitle className="text-sm text-yellow-800">Debug Info (Dev Mode)</CardTitle>
+          </CardHeader>
+          <CardContent className="text-xs text-yellow-700">
+            <div>Total Complaints Fetched: {complaints.length}</div>
+            <div>User ID: {user?.id}</div>
+            <div>User Role: {user?.role}</div>
+            <div>My Tasks Count: {myTasks.length}</div>
+            {complaints.length > 0 && (
+              <div>Sample Task: {JSON.stringify(complaints[0], null, 2).substring(0, 200)}...</div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
