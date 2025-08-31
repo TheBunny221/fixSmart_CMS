@@ -73,6 +73,22 @@ const MaintenanceTasks: React.FC = () => {
 
   const [updateComplaintStatus] = useUpdateComplaintStatusMutation();
 
+  // Helper function to get estimated time based on priority
+  function getPriorityEstimatedTime(priority: string) {
+    switch (priority) {
+      case "CRITICAL":
+        return "2-4 hours";
+      case "HIGH":
+        return "4-8 hours";
+      case "MEDIUM":
+        return "1-2 days";
+      case "LOW":
+        return "2-5 days";
+      default:
+        return "1-2 days";
+    }
+  }
+
   // Extract tasks from API response
   const tasks = useMemo(() => {
     if (Array.isArray(complaintsResponse?.data?.complaints)) {
@@ -117,22 +133,6 @@ const MaintenanceTasks: React.FC = () => {
     }
     return [];
   }, [complaintsResponse]);
-
-  // Helper function to get estimated time based on priority
-  const getPriorityEstimatedTime = (priority: string) => {
-    switch (priority) {
-      case "CRITICAL":
-        return "2-4 hours";
-      case "HIGH":
-        return "4-8 hours";
-      case "MEDIUM":
-        return "1-2 days";
-      case "LOW":
-        return "2-5 days";
-      default:
-        return "1-2 days";
-    }
-  };
 
 
   // Calculate task counts
