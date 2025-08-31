@@ -93,14 +93,37 @@ const MaintenanceDashboard: React.FC = () => {
       (c) => new Date(c.assignedOn || c.submittedOn).toDateString() === today,
     ).length;
 
+    // Calculate average completion time for resolved tasks
+    const resolvedTasks = assignedTasks.filter((c) => c.status === "RESOLVED" && c.resolvedOn && c.assignedOn);
+    const avgCompletionTime = resolvedTasks.length > 0
+      ? resolvedTasks.reduce((acc, task) => {
+          const assignedDate = new Date(task.assignedOn);
+          const resolvedDate = new Date(task.resolvedOn);
+          const diffInDays = (resolvedDate.getTime() - assignedDate.getTime()) / (1000 * 60 * 60 * 24);
+          return acc + diffInDays;
+        }, 0) / resolvedTasks.length
+      : 0;
+
+    // Calculate efficiency as percentage of tasks completed on time
+    const tasksWithDeadlines = assignedTasks.filter((c) => c.deadline);
+    const onTimeTasks = tasksWithDeadlines.filter((c) => {
+      if (c.status === "RESOLVED" && c.resolvedOn) {
+        return new Date(c.resolvedOn) <= new Date(c.deadline);
+      }
+      return c.status !== "RESOLVED" && new Date() <= new Date(c.deadline);
+    });
+    const efficiency = tasksWithDeadlines.length > 0
+      ? Math.round((onTimeTasks.length / tasksWithDeadlines.length) * 100)
+      : totalTasks === 0 ? 100 : Math.round((completed / totalTasks) * 100);
+
     return {
       totalTasks,
       inProgress,
       completed,
       pending,
       todayTasks,
-      avgCompletionTime: 1.5,
-      efficiency: 92,
+      avgCompletionTime: Math.round(avgCompletionTime * 10) / 10, // Round to 1 decimal
+      efficiency,
     };
   }, [complaints, user?.id]);
 
