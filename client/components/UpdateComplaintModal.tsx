@@ -558,7 +558,8 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
           </div>
 
           {/* Assignment Section - Only for Ward Officers and Administrators */}
-          {(user?.role === "WARD_OFFICER" || user?.role === "ADMINISTRATOR") && (
+          {(user?.role === "WARD_OFFICER" ||
+            user?.role === "ADMINISTRATOR") && (
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="assignedTo">{getDropdownLabel()}</Label>
@@ -579,8 +580,8 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
                     <div className="flex items-center">
                       <AlertTriangle className="h-4 w-4 text-blue-500 mr-2" />
                       <span className="text-sm text-blue-700">
-                        This complaint needs to be assigned to a maintenance team
-                        member to proceed.
+                        This complaint needs to be assigned to a maintenance
+                        team member to proceed.
                       </span>
                     </div>
                   </div>

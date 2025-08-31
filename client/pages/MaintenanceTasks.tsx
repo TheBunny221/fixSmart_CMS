@@ -96,12 +96,17 @@ const MaintenanceTasks: React.FC = () => {
         id: complaint.id,
         title: complaint.title || `${complaint.type} Issue`,
         location: complaint.area,
-        address: `${complaint.area}${complaint.landmark ? ', ' + complaint.landmark : ''}${complaint.address ? ', ' + complaint.address : ''}`,
+        address: `${complaint.area}${complaint.landmark ? ", " + complaint.landmark : ""}${complaint.address ? ", " + complaint.address : ""}`,
         priority: complaint.priority || "MEDIUM",
         status: complaint.status,
         estimatedTime: getPriorityEstimatedTime(complaint.priority),
-        dueDate: complaint.deadline ? new Date(complaint.deadline).toISOString().split('T')[0] : null,
-        isOverdue: complaint.deadline ? new Date(complaint.deadline) < new Date() && !["RESOLVED", "CLOSED"].includes(complaint.status) : false,
+        dueDate: complaint.deadline
+          ? new Date(complaint.deadline).toISOString().split("T")[0]
+          : null,
+        isOverdue: complaint.deadline
+          ? new Date(complaint.deadline) < new Date() &&
+            !["RESOLVED", "CLOSED"].includes(complaint.status)
+          : false,
         description: complaint.description,
         assignedAt: complaint.assignedOn || complaint.submittedOn,
         resolvedAt: complaint.resolvedOn,
@@ -116,12 +121,17 @@ const MaintenanceTasks: React.FC = () => {
         id: complaint.id,
         title: complaint.title || `${complaint.type} Issue`,
         location: complaint.area,
-        address: `${complaint.area}${complaint.landmark ? ', ' + complaint.landmark : ''}${complaint.address ? ', ' + complaint.address : ''}`,
+        address: `${complaint.area}${complaint.landmark ? ", " + complaint.landmark : ""}${complaint.address ? ", " + complaint.address : ""}`,
         priority: complaint.priority || "MEDIUM",
         status: complaint.status,
         estimatedTime: getPriorityEstimatedTime(complaint.priority),
-        dueDate: complaint.deadline ? new Date(complaint.deadline).toISOString().split('T')[0] : null,
-        isOverdue: complaint.deadline ? new Date(complaint.deadline) < new Date() && !["RESOLVED", "CLOSED"].includes(complaint.status) : false,
+        dueDate: complaint.deadline
+          ? new Date(complaint.deadline).toISOString().split("T")[0]
+          : null,
+        isOverdue: complaint.deadline
+          ? new Date(complaint.deadline) < new Date() &&
+            !["RESOLVED", "CLOSED"].includes(complaint.status)
+          : false,
         description: complaint.description,
         assignedAt: complaint.assignedOn || complaint.submittedOn,
         resolvedAt: complaint.resolvedOn,
@@ -133,7 +143,6 @@ const MaintenanceTasks: React.FC = () => {
     }
     return [];
   }, [complaintsResponse]);
-
 
   // Calculate task counts
   const taskCounts = {
@@ -212,7 +221,10 @@ const MaintenanceTasks: React.FC = () => {
   const handleNavigate = (task: any) => {
     if (task.latitude && task.longitude) {
       // Use exact coordinates if available
-      window.open(`https://maps.google.com/?q=${task.latitude},${task.longitude}`, "_blank");
+      window.open(
+        `https://maps.google.com/?q=${task.latitude},${task.longitude}`,
+        "_blank",
+      );
     } else {
       // Fallback to address search
       const encodedAddress = encodeURIComponent(task.address);
@@ -496,11 +508,15 @@ const MaintenanceTasks: React.FC = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuItem onClick={() => handleViewPhoto(task.photo)}>
+                          <DropdownMenuItem
+                            onClick={() => handleViewPhoto(task.photo)}
+                          >
                             View Existing Photo
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handlePhotoUpload(task)}>
+                          <DropdownMenuItem
+                            onClick={() => handlePhotoUpload(task)}
+                          >
                             Upload New Photos
                           </DropdownMenuItem>
                         </DropdownMenuContent>

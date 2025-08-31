@@ -68,17 +68,20 @@ const MaintenanceDashboard: React.FC = () => {
     const assignedTasks = complaints.filter((c: any) => {
       const assigneeId = c.assignedToId || c.assignedTo?.id || c.assignedTo;
       const maintenanceTeamId = c.maintenanceTeamId || c.maintenanceTeam?.id;
-      return (assigneeId === user?.id || maintenanceTeamId === user?.id) && c.status !== "REGISTERED";
+      return (
+        (assigneeId === user?.id || maintenanceTeamId === user?.id) &&
+        c.status !== "REGISTERED"
+      );
     });
 
-//   useEffect(() => {
-//     // Filter tasks assigned to this maintenance team member
-//     const assignedTasks = complaints.filter(
-//       (c) => c.assignedToId === user?.id && c.status !== "REGISTERED",
-//     );
-//     const assignedTasks = complaints.filter(
-//       (c) => c.assignedToId === user?.id && c.status !== "REGISTERED",
-//     );
+    //   useEffect(() => {
+    //     // Filter tasks assigned to this maintenance team member
+    //     const assignedTasks = complaints.filter(
+    //       (c) => c.assignedToId === user?.id && c.status !== "REGISTERED",
+    //     );
+    //     const assignedTasks = complaints.filter(
+    //       (c) => c.assignedToId === user?.id && c.status !== "REGISTERED",
+    //     );
 
     const totalTasks = assignedTasks.length;
     const inProgress = assignedTasks.filter(
@@ -95,15 +98,20 @@ const MaintenanceDashboard: React.FC = () => {
     ).length;
 
     // Calculate average completion time for resolved tasks
-    const resolvedTasks = assignedTasks.filter((c) => c.status === "RESOLVED" && c.resolvedOn && c.assignedOn);
-    const avgCompletionTime = resolvedTasks.length > 0
-      ? resolvedTasks.reduce((acc, task) => {
-          const assignedDate = new Date(task.assignedOn);
-          const resolvedDate = new Date(task.resolvedOn);
-          const diffInDays = (resolvedDate.getTime() - assignedDate.getTime()) / (1000 * 60 * 60 * 24);
-          return acc + diffInDays;
-        }, 0) / resolvedTasks.length
-      : 0;
+    const resolvedTasks = assignedTasks.filter(
+      (c) => c.status === "RESOLVED" && c.resolvedOn && c.assignedOn,
+    );
+    const avgCompletionTime =
+      resolvedTasks.length > 0
+        ? resolvedTasks.reduce((acc, task) => {
+            const assignedDate = new Date(task.assignedOn);
+            const resolvedDate = new Date(task.resolvedOn);
+            const diffInDays =
+              (resolvedDate.getTime() - assignedDate.getTime()) /
+              (1000 * 60 * 60 * 24);
+            return acc + diffInDays;
+          }, 0) / resolvedTasks.length
+        : 0;
 
     // Calculate efficiency as percentage of tasks completed on time
     const tasksWithDeadlines = assignedTasks.filter((c) => c.deadline);
@@ -113,9 +121,12 @@ const MaintenanceDashboard: React.FC = () => {
       }
       return c.status !== "RESOLVED" && new Date() <= new Date(c.deadline);
     });
-    const efficiency = tasksWithDeadlines.length > 0
-      ? Math.round((onTimeTasks.length / tasksWithDeadlines.length) * 100)
-      : totalTasks === 0 ? 100 : Math.round((completed / totalTasks) * 100);
+    const efficiency =
+      tasksWithDeadlines.length > 0
+        ? Math.round((onTimeTasks.length / tasksWithDeadlines.length) * 100)
+        : totalTasks === 0
+          ? 100
+          : Math.round((completed / totalTasks) * 100);
 
     return {
       totalTasks,
@@ -160,7 +171,10 @@ const MaintenanceDashboard: React.FC = () => {
     return complaints.filter((c: any) => {
       const assigneeId = c.assignedToId || c.assignedTo?.id || c.assignedTo;
       const maintenanceTeamId = c.maintenanceTeamId || c.maintenanceTeam?.id;
-      return (assigneeId === user?.id || maintenanceTeamId === user?.id) && c.status !== "REGISTERED";
+      return (
+        (assigneeId === user?.id || maintenanceTeamId === user?.id) &&
+        c.status !== "REGISTERED"
+      );
     });
   }, [complaints, user?.id]);
 
@@ -197,7 +211,9 @@ const MaintenanceDashboard: React.FC = () => {
     return (
       <div className="space-y-6">
         <div className="bg-gradient-to-r from-green-600 to-green-800 rounded-lg p-6 text-white">
-          <h1 className="text-2xl font-bold mb-2">🚧 Maintenance Dashboard 🛠️</h1>
+          <h1 className="text-2xl font-bold mb-2">
+            🚧 Maintenance Dashboard 🛠️
+          </h1>
           <p className="text-green-100">Loading your assigned tasks...</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -224,7 +240,9 @@ const MaintenanceDashboard: React.FC = () => {
       <div className="space-y-6">
         <div className="bg-gradient-to-r from-red-600 to-red-800 rounded-lg p-6 text-white">
           <h1 className="text-2xl font-bold mb-2">⚠️ Dashboard Error</h1>
-          <p className="text-red-100">Failed to load your tasks. Please try again.</p>
+          <p className="text-red-100">
+            Failed to load your tasks. Please try again.
+          </p>
           <div className="mt-4">
             <Button
               className="bg-white text-red-600 hover:bg-gray-100"
@@ -267,7 +285,9 @@ const MaintenanceDashboard: React.FC = () => {
       {process.env.NODE_ENV === "development" && (
         <Card className="bg-yellow-50 border-yellow-200">
           <CardHeader>
-            <CardTitle className="text-sm text-yellow-800">Debug Info (Dev Mode)</CardTitle>
+            <CardTitle className="text-sm text-yellow-800">
+              Debug Info (Dev Mode)
+            </CardTitle>
           </CardHeader>
           <CardContent className="text-xs text-yellow-700">
             <div>Total Complaints Fetched: {complaints.length}</div>
@@ -275,7 +295,10 @@ const MaintenanceDashboard: React.FC = () => {
             <div>User Role: {user?.role}</div>
             <div>My Tasks Count: {myTasks.length}</div>
             {complaints.length > 0 && (
-              <div>Sample Task: {JSON.stringify(complaints[0], null, 2).substring(0, 200)}...</div>
+              <div>
+                Sample Task:{" "}
+                {JSON.stringify(complaints[0], null, 2).substring(0, 200)}...
+              </div>
             )}
           </CardContent>
         </Card>
