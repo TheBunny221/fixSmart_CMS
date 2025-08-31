@@ -190,6 +190,53 @@ const MaintenanceDashboard: React.FC = () => {
     }
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-gradient-to-r from-green-600 to-green-800 rounded-lg p-6 text-white">
+          <h1 className="text-2xl font-bold mb-2">🚧 Maintenance Dashboard 🛠️</h1>
+          <p className="text-green-100">Loading your assigned tasks...</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <div className="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-8 bg-gray-200 rounded w-12 animate-pulse mb-2"></div>
+                <div className="h-3 bg-gray-200 rounded w-24 animate-pulse"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-gradient-to-r from-red-600 to-red-800 rounded-lg p-6 text-white">
+          <h1 className="text-2xl font-bold mb-2">⚠️ Dashboard Error</h1>
+          <p className="text-red-100">Failed to load your tasks. Please try again.</p>
+          <div className="mt-4">
+            <Button
+              className="bg-white text-red-600 hover:bg-gray-100"
+              onClick={() => refetchComplaints()}
+            >
+              <AlertTriangle className="h-4 w-4 mr-2" />
+              Retry
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
