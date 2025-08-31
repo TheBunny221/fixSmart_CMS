@@ -78,8 +78,8 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
   };
 
   const canManageComplaint =
-    userRole === "WARD_OFFICER" || userRole === "ADMINISTRATOR";
-  const canAssign = userRole === "WARD_OFFICER" || userRole === "ADMINISTRATOR";
+    userRole === "WARD_OFFICER" || userRole === "ADMINISTRATOR" || userRole === "MAINTENANCE_TEAM";
+  const canAssign = userRole === "WARD_OFFICER" || userRole === "ADMINISTRATOR" || userRole === "MAINTENANCE_TEAM";
   const isMaintenanceTeam = userRole === "MAINTENANCE_TEAM";
 
   return (
@@ -112,8 +112,8 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
             </Button>
           </Link>
 
-          {/* Quick Status Change Buttons for Ward Officers */}
-          {canManageComplaint && (
+          {/* Quick Status Change Buttons for Ward Officers and Admin */}
+          {(userRole === "WARD_OFFICER" || userRole === "ADMINISTRATOR") && (
             <>
               {complaint.status === "REGISTERED" && (
                 <Button
@@ -156,6 +156,17 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
           {/* Maintenance Team Actions */}
           {isMaintenanceTeam && (
             <>
+              {/* Reassign Button for all statuses */}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onShowUpdateModal?.(complaint)}
+                title="Reassign or Update"
+                className="text-blue-600 hover:text-blue-700"
+              >
+                <UserPlus className="h-3 w-3" />
+              </Button>
+
               {complaint.status === "ASSIGNED" && (
                 <Button
                   size="sm"
@@ -183,7 +194,7 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
           )}
 
           {/* More Actions Dropdown */}
-          {(canManageComplaint || isMaintenanceTeam) && (
+          {canManageComplaint && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="sm" variant="outline">
@@ -191,13 +202,13 @@ const ComplaintQuickActions: React.FC<ComplaintQuickActionsProps> = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {onShowUpdateModal && (canManageComplaint || isMaintenanceTeam) && (
+                {onShowUpdateModal && (
                   <>
                     <DropdownMenuItem
                       onClick={() => onShowUpdateModal(complaint)}
                     >
                       <Edit className="h-4 w-4 mr-2" />
-                      {isMaintenanceTeam ? "Update Status" : "Update Complaint"}
+                      {isMaintenanceTeam ? "Reassign or Update" : "Update Complaint"}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                   </>
