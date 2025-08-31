@@ -247,10 +247,18 @@ const MaintenanceDashboard: React.FC = () => {
         <p className="text-green-100">
           Manage your assigned tasks and track field work progress.
         </p>
-        <div className="mt-4">
+        <div className="mt-4 flex space-x-2">
           <Button className="bg-white text-green-600 hover:bg-gray-100">
             <Navigation className="h-4 w-4 mr-2" />
             Start Field Work
+          </Button>
+          <Button
+            variant="outline"
+            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            onClick={() => refetchComplaints()}
+          >
+            <Clock className="h-4 w-4 mr-2" />
+            Refresh Data
           </Button>
         </div>
       </div>
