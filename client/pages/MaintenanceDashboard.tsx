@@ -41,13 +41,13 @@ const MaintenanceDashboard: React.FC = () => {
   const { translations } = useAppSelector((state) => state.language);
 
   // Fetch complaints assigned to this maintenance team member
+  // Let the backend handle role-based filtering automatically for maintenance team
   const {
     data: complaintsResponse,
     isLoading,
     error,
     refetch: refetchComplaints,
   } = useGetComplaintsQuery({
-    assignedToId: user?.id, // Use assignedToId instead of assignedTo
     page: 1,
     limit: 100,
   });
