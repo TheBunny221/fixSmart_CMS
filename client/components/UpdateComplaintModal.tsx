@@ -557,119 +557,121 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
             </div>
           </div>
 
-          {/* Assignment Section */}
-          <div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="assignedTo">{getDropdownLabel()}</Label>
+          {/* Assignment Section - Only for Ward Officers and Administrators */}
+          {(user?.role === "WARD_OFFICER" || user?.role === "ADMINISTRATOR") && (
+            <div>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="assignedTo">{getDropdownLabel()}</Label>
+                {user?.role === "WARD_OFFICER" &&
+                  (complaint as any)?.needsTeamAssignment &&
+                  !["RESOLVED", "CLOSED"].includes(complaint.status) && (
+                    <Badge className="bg-blue-100 text-blue-800 text-xs">
+                      Assignment Required
+                    </Badge>
+                  )}
+              </div>
+
+              {/* Helpful message for ward officers - only for active complaints */}
               {user?.role === "WARD_OFFICER" &&
                 (complaint as any)?.needsTeamAssignment &&
                 !["RESOLVED", "CLOSED"].includes(complaint.status) && (
-                  <Badge className="bg-blue-100 text-blue-800 text-xs">
-                    Assignment Required
-                  </Badge>
-                )}
-            </div>
-
-            {/* Helpful message for ward officers - only for active complaints */}
-            {user?.role === "WARD_OFFICER" &&
-              (complaint as any)?.needsTeamAssignment &&
-              !["RESOLVED", "CLOSED"].includes(complaint.status) && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
-                  <div className="flex items-center">
-                    <AlertTriangle className="h-4 w-4 text-blue-500 mr-2" />
-                    <span className="text-sm text-blue-700">
-                      This complaint needs to be assigned to a maintenance team
-                      member to proceed.
-                    </span>
-                  </div>
-                </div>
-              )}
-
-            <div className="space-y-2">
-              {/* Search Box 
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder={`Search ${user?.role === "ADMINISTRATOR" ? "ward officers" : "maintenance team members"}...`}
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>*/}
-
-              {/* User Selection */}
-              <Select
-                value={
-                  user?.role === "WARD_OFFICER"
-                    ? formData.maintenanceTeamId
-                    : formData.assignedToId
-                }
-                onValueChange={(value) => {
-                  if (user?.role === "WARD_OFFICER") {
-                    setFormData((prev) => ({
-                      ...prev,
-                      maintenanceTeamId: value,
-                    }));
-                  } else {
-                    setFormData((prev) => ({ ...prev, assignedToId: value }));
-                  }
-                  // Clear validation errors when user makes a selection
-                  setValidationErrors([]);
-                }}
-                disabled={isLoadingUsers || availableUsers.length === 0}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={getDropdownLabel()} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-2">
                     <div className="flex items-center">
-                      <User className="h-4 w-4 mr-2" />
-                      No Assignment
+                      <AlertTriangle className="h-4 w-4 text-blue-500 mr-2" />
+                      <span className="text-sm text-blue-700">
+                        This complaint needs to be assigned to a maintenance team
+                        member to proceed.
+                      </span>
                     </div>
-                  </SelectItem>
-                  {filteredUsers.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      <div className="flex items-center justify-between w-full gap-2">
-                        <div className="flex items-center">
-                          {getUserRoleIcon(user.role)}
-                          <div className="ml-2 text-left">
-                            <div className="font-medium">{user.fullName}</div>
-                            <div className="text-xs text-gray-500">
-                              {user.email}
-                            </div>
-                          </div>
-                        </div>
-                        <Badge variant="outline" className="text-xs">
-                          {user.role.replace("_", " ")}
-                        </Badge>
-                        {user.ward && (
-                          <div className="text-xs text-blue-600">
-                            {user.ward.name}
-                          </div>
-                        )}
+                  </div>
+                )}
+
+              <div className="space-y-2">
+                {/* Search Box
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    placeholder={`Search ${user?.role === "ADMINISTRATOR" ? "ward officers" : "maintenance team members"}...`}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>*/}
+
+                {/* User Selection */}
+                <Select
+                  value={
+                    user?.role === "WARD_OFFICER"
+                      ? formData.maintenanceTeamId
+                      : formData.assignedToId
+                  }
+                  onValueChange={(value) => {
+                    if (user?.role === "WARD_OFFICER") {
+                      setFormData((prev) => ({
+                        ...prev,
+                        maintenanceTeamId: value,
+                      }));
+                    } else {
+                      setFormData((prev) => ({ ...prev, assignedToId: value }));
+                    }
+                    // Clear validation errors when user makes a selection
+                    setValidationErrors([]);
+                  }}
+                  disabled={isLoadingUsers || availableUsers.length === 0}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={getDropdownLabel()} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      <div className="flex items-center">
+                        <User className="h-4 w-4 mr-2" />
+                        No Assignment
                       </div>
                     </SelectItem>
-                  ))}
-                  {filteredUsers.length === 0 && searchTerm && (
-                    <SelectItem value="no-results" disabled>
-                      No users found matching "{searchTerm}"
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+                    {filteredUsers.map((user) => (
+                      <SelectItem key={user.id} value={user.id}>
+                        <div className="flex items-center justify-between w-full gap-2">
+                          <div className="flex items-center">
+                            {getUserRoleIcon(user.role)}
+                            <div className="ml-2 text-left">
+                              <div className="font-medium">{user.fullName}</div>
+                              <div className="text-xs text-gray-500">
+                                {user.email}
+                              </div>
+                            </div>
+                          </div>
+                          <Badge variant="outline" className="text-xs">
+                            {user.role.replace("_", " ")}
+                          </Badge>
+                          {user.ward && (
+                            <div className="text-xs text-blue-600">
+                              {user.ward.name}
+                            </div>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))}
+                    {filteredUsers.length === 0 && searchTerm && (
+                      <SelectItem value="no-results" disabled>
+                        No users found matching "{searchTerm}"
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
 
-              {isLoadingUsers && (
-                <div className="text-sm text-gray-500">Loading users...</div>
-              )}
+                {isLoadingUsers && (
+                  <div className="text-sm text-gray-500">Loading users...</div>
+                )}
 
-              {usersError && (
-                <div className="text-sm text-red-500">
-                  Error loading users. Please try again.
-                </div>
-              )}
+                {usersError && (
+                  <div className="text-sm text-red-500">
+                    Error loading users. Please try again.
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Remarks */}
           <div>
