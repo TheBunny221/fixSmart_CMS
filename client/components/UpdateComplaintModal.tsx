@@ -526,6 +526,11 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
                   You can update status to In Progress or mark as Resolved
                 </p>
               )}
+              {process.env.NODE_ENV === "development" && (
+                <div className="text-xs text-blue-600 mb-1">
+                  Debug: Available statuses for {user?.role}: {getAvailableStatusOptions().join(", ")}
+                </div>
+              )}
               <Select
                 value={formData.status}
                 onValueChange={(value) => {
