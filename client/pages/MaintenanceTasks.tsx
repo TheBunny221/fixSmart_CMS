@@ -147,6 +147,7 @@ const MaintenanceTasks: React.FC = () => {
         latitude: complaint.latitude,
         longitude: complaint.longitude,
         complaintId: complaint.complaintId,
+        statusLogs: complaint.statusLogs || [],
       }));
     }
     return [];
