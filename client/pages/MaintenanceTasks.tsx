@@ -818,6 +818,8 @@ const MaintenanceTasks: React.FC = () => {
           complaintId={selectedTaskForPhotos.id}
           onSuccess={() => {
             refetchComplaints();
+            // Keep the progress section expanded to show new photos
+            setExpandedTaskId(selectedTaskForPhotos.id);
           }}
         />
       )}
