@@ -804,7 +804,13 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
               Cancel
             </Button>
             <Button type="submit" disabled={isUpdating}>
-              {isUpdating ? "Updating..." : "Update Complaint"}
+              {isUpdating
+                ? "Updating..."
+                : user?.role === "MAINTENANCE_TEAM"
+                ? "Update Status"
+                : user?.role === "WARD_OFFICER"
+                ? "Save Changes"
+                : "Update Complaint"}
             </Button>
           </DialogFooter>
         </form>
