@@ -170,6 +170,9 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
       if (formData.status === "REGISTERED") {
         errors.push("Maintenance team cannot set status to 'Registered'.");
       }
+      if (formData.priority !== complaint?.priority) {
+        errors.push("Maintenance team cannot change complaint priority. Contact your supervisor if needed.");
+      }
     }
 
     // Skip assignment validation for resolved and closed complaints
