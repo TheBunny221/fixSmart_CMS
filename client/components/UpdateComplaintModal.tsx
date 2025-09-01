@@ -157,7 +157,7 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
     const availableStatuses = getAvailableStatusOptions();
     if (formData.status && !availableStatuses.includes(formData.status)) {
       errors.push(
-        `You don't have permission to set status to '${formData.status}'. Available options: ${availableStatuses.join(", ")}`
+        `You don't have permission to set status to '${formData.status}'. Available options: ${availableStatuses.join(", ")}`,
       );
     }
 
@@ -171,7 +171,9 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
         errors.push("Maintenance team cannot set status to 'Registered'.");
       }
       if (formData.priority !== complaint?.priority) {
-        errors.push("Maintenance team cannot change complaint priority. Contact your supervisor if needed.");
+        errors.push(
+          "Maintenance team cannot change complaint priority. Contact your supervisor if needed.",
+        );
       }
     }
 
@@ -396,10 +398,10 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
     if (user?.role === "MAINTENANCE_TEAM") {
       // Maintenance team can only progress through assigned workflow
       const statusFlow = {
-        "ASSIGNED": ["ASSIGNED", "IN_PROGRESS"],
-        "IN_PROGRESS": ["IN_PROGRESS", "RESOLVED"],
-        "RESOLVED": ["RESOLVED"], // Can't change once resolved
-        "REOPENED": ["REOPENED", "IN_PROGRESS"], // If reopened, can work on it
+        ASSIGNED: ["ASSIGNED", "IN_PROGRESS"],
+        IN_PROGRESS: ["IN_PROGRESS", "RESOLVED"],
+        RESOLVED: ["RESOLVED"], // Can't change once resolved
+        REOPENED: ["REOPENED", "IN_PROGRESS"], // If reopened, can work on it
       };
 
       return statusFlow[currentStatus] || ["IN_PROGRESS", "RESOLVED"];
@@ -412,7 +414,14 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
 
     if (user?.role === "ADMINISTRATOR") {
       // Administrators have full control over all statuses
-      return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CLOSED", "REOPENED"];
+      return [
+        "REGISTERED",
+        "ASSIGNED",
+        "IN_PROGRESS",
+        "RESOLVED",
+        "CLOSED",
+        "REOPENED",
+      ];
     }
 
     // Default fallback for other roles
@@ -432,15 +441,15 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
             {user?.role === "MAINTENANCE_TEAM"
               ? "Update Task Status"
               : user?.role === "WARD_OFFICER"
-              ? "Manage Complaint"
-              : "Update Complaint"}
+                ? "Manage Complaint"
+                : "Update Complaint"}
           </DialogTitle>
           <DialogDescription>
             {user?.role === "MAINTENANCE_TEAM"
               ? `Update your work status for complaint #${complaint.complaintId || complaint.id.slice(-6)}`
               : user?.role === "WARD_OFFICER"
-              ? `Assign and manage complaint #${complaint.complaintId || complaint.id.slice(-6)}`
-              : `Update the status and assignment of complaint #${complaint.complaintId || complaint.id.slice(-6)}`}
+                ? `Assign and manage complaint #${complaint.complaintId || complaint.id.slice(-6)}`
+                : `Update the status and assignment of complaint #${complaint.complaintId || complaint.id.slice(-6)}`}
           </DialogDescription>
         </DialogHeader>
 
@@ -454,7 +463,10 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
               </span>
             </div>
             {user?.role === "MAINTENANCE_TEAM" && (
-              <Badge variant="outline" className="text-xs text-blue-600 border-blue-300">
+              <Badge
+                variant="outline"
+                className="text-xs text-blue-600 border-blue-300"
+              >
                 Limited Permissions
               </Badge>
             )}
@@ -552,13 +564,18 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
           {user?.role === "MAINTENANCE_TEAM" && (
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600">Current Priority:</span>
-                <Badge className={getPriorityColor(complaint?.priority || "MEDIUM")}>
+                <span className="text-sm font-medium text-gray-600">
+                  Current Priority:
+                </span>
+                <Badge
+                  className={getPriorityColor(complaint?.priority || "MEDIUM")}
+                >
                   {complaint?.priority || "MEDIUM"}
                 </Badge>
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                Maintenance team cannot change priority. Contact your supervisor if needed.
+                Maintenance team cannot change priority. Contact your supervisor
+                if needed.
               </p>
             </div>
           )}
@@ -581,9 +598,11 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
           )}
 
           {/* Status Update */}
-          <div className={`grid gap-4 ${
-            user?.role === "MAINTENANCE_TEAM" ? "grid-cols-1" : "grid-cols-2"
-          }`}>
+          <div
+            className={`grid gap-4 ${
+              user?.role === "MAINTENANCE_TEAM" ? "grid-cols-1" : "grid-cols-2"
+            }`}
+          >
             <div>
               <Label htmlFor="status">Status</Label>
               {user?.role === "MAINTENANCE_TEAM" && (
@@ -593,7 +612,8 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
               )}
               {process.env.NODE_ENV === "development" && (
                 <div className="text-xs text-blue-600 mb-1">
-                  Debug: Available statuses for {user?.role}: {getAvailableStatusOptions().join(", ")}
+                  Debug: Available statuses for {user?.role}:{" "}
+                  {getAvailableStatusOptions().join(", ")}
                 </div>
               )}
               <Select
@@ -813,8 +833,8 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
                 user?.role === "MAINTENANCE_TEAM"
                   ? "Add notes about work progress, issues encountered, or completion details..."
                   : user?.role === "WARD_OFFICER"
-                  ? "Add notes about assignment, instructions, or status changes..."
-                  : "Add any additional comments or remarks about this update..."
+                    ? "Add notes about assignment, instructions, or status changes..."
+                    : "Add any additional comments or remarks about this update..."
               }
               value={formData.remarks}
               onChange={(e) =>
@@ -832,10 +852,10 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
               {isUpdating
                 ? "Updating..."
                 : user?.role === "MAINTENANCE_TEAM"
-                ? "Update Status"
-                : user?.role === "WARD_OFFICER"
-                ? "Save Changes"
-                : "Update Complaint"}
+                  ? "Update Status"
+                  : user?.role === "WARD_OFFICER"
+                    ? "Save Changes"
+                    : "Update Complaint"}
             </Button>
           </DialogFooter>
         </form>

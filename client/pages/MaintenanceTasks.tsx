@@ -275,7 +275,7 @@ const MaintenanceTasks: React.FC = () => {
       // Add status logs
       statusLogs.forEach((log: any) => {
         items.push({
-          type: 'status',
+          type: "status",
           timestamp: log.timestamp || log.createdAt,
           content: log,
         });
@@ -284,14 +284,17 @@ const MaintenanceTasks: React.FC = () => {
       // Add photos
       photos.forEach((photo: any) => {
         items.push({
-          type: 'photo',
+          type: "photo",
           timestamp: photo.uploadedAt,
           content: photo,
         });
       });
 
       // Sort by timestamp (newest first)
-      return items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      return items.sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      );
     }, [statusLogs, photos]);
 
     if (isLoadingPhotos) {
@@ -316,7 +319,9 @@ const MaintenanceTasks: React.FC = () => {
           <div className="text-center py-4 text-gray-500">
             <Camera className="h-8 w-8 mx-auto mb-2 text-gray-400" />
             <p className="text-sm">No updates or photos yet</p>
-            <p className="text-xs">Upload photos and add progress notes as you work</p>
+            <p className="text-xs">
+              Upload photos and add progress notes as you work
+            </p>
           </div>
         ) : (
           <div className="space-y-3 max-h-80 overflow-y-auto">
@@ -324,7 +329,7 @@ const MaintenanceTasks: React.FC = () => {
               <div key={index} className="border-l-2 border-blue-200 pl-4 pb-3">
                 <div className="flex items-start space-x-3">
                   <div className="bg-white rounded-full p-1 border shadow-sm">
-                    {item.type === 'photo' ? (
+                    {item.type === "photo" ? (
                       <Image className="h-3 w-3 text-blue-600" />
                     ) : (
                       <User className="h-3 w-3 text-green-600" />
@@ -336,25 +341,29 @@ const MaintenanceTasks: React.FC = () => {
                       <p className="text-xs text-gray-500">
                         {new Date(item.timestamp).toLocaleString()}
                       </p>
-                      {item.type === 'photo' && (
+                      {item.type === "photo" && (
                         <Badge variant="outline" className="text-xs">
                           Photo
                         </Badge>
                       )}
                     </div>
 
-                    {item.type === 'photo' ? (
+                    {item.type === "photo" ? (
                       <div className="space-y-2">
                         <div className="flex items-start space-x-3">
                           <img
                             src={item.content.photoUrl}
                             alt="Work progress photo"
                             className="w-16 h-16 object-cover rounded-lg border cursor-pointer hover:opacity-75 transition-opacity"
-                            onClick={() => handleViewPhoto(item.content.photoUrl)}
+                            onClick={() =>
+                              handleViewPhoto(item.content.photoUrl)
+                            }
                           />
                           <div className="flex-1">
                             <p className="text-sm text-gray-600 mb-1">
-                              Uploaded by {item.content.uploadedByTeam?.fullName || 'Team Member'}
+                              Uploaded by{" "}
+                              {item.content.uploadedByTeam?.fullName ||
+                                "Team Member"}
                             </p>
                             {item.content.description && (
                               <p className="text-sm text-gray-800 bg-white rounded p-2 border">
@@ -362,7 +371,8 @@ const MaintenanceTasks: React.FC = () => {
                               </p>
                             )}
                             <p className="text-xs text-gray-500 mt-1">
-                              {item.content.originalName} • {(item.content.size / 1024 / 1024).toFixed(1)}MB
+                              {item.content.originalName} •{" "}
+                              {(item.content.size / 1024 / 1024).toFixed(1)}MB
                             </p>
                           </div>
                         </div>
@@ -370,12 +380,15 @@ const MaintenanceTasks: React.FC = () => {
                     ) : (
                       <div className="space-y-1">
                         <div className="flex items-center space-x-2">
-                          <Badge className={getStatusColor(item.content.toStatus)} variant="secondary">
-                            {item.content.toStatus?.replace('_', ' ')}
+                          <Badge
+                            className={getStatusColor(item.content.toStatus)}
+                            variant="secondary"
+                          >
+                            {item.content.toStatus?.replace("_", " ")}
                           </Badge>
                           {item.content.fromStatus && (
                             <span className="text-xs text-gray-500">
-                              from {item.content.fromStatus.replace('_', ' ')}
+                              from {item.content.fromStatus.replace("_", " ")}
                             </span>
                           )}
                         </div>
@@ -385,7 +398,7 @@ const MaintenanceTasks: React.FC = () => {
                           </p>
                         )}
                         <p className="text-xs text-gray-500">
-                          by {item.content.user?.fullName || 'System'}
+                          by {item.content.user?.fullName || "System"}
                         </p>
                       </div>
                     )}
