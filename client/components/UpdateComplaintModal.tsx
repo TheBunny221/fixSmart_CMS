@@ -363,43 +363,34 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
     return "Select User";
   };
 
-  // Get available status options based on user role
+  // Get available status options based on user role and current status
   const getAvailableStatusOptions = () => {
     const currentStatus = complaint?.status;
 
     if (user?.role === "MAINTENANCE_TEAM") {
-      // Maintenance team can only change to IN_PROGRESS and RESOLVED
-      const options = [];
+      // Maintenance team can only progress through assigned workflow
+      const statusFlow = {
+        "ASSIGNED": ["ASSIGNED", "IN_PROGRESS"],
+        "IN_PROGRESS": ["IN_PROGRESS", "RESOLVED"],
+        "RESOLVED": ["RESOLVED"], // Can't change once resolved
+        "REOPENED": ["REOPENED", "IN_PROGRESS"], // If reopened, can work on it
+      };
 
-      // Allow current status to be selectable
-      if (currentStatus && ["ASSIGNED", "IN_PROGRESS", "RESOLVED"].includes(currentStatus)) {
-        options.push(currentStatus);
-      }
-
-      // Add progression options
-      if (currentStatus === "ASSIGNED") {
-        options.push("IN_PROGRESS");
-      }
-      if (["ASSIGNED", "IN_PROGRESS"].includes(currentStatus)) {
-        options.push("RESOLVED");
-      }
-
-      // Remove duplicates
-      return [...new Set(options)];
+      return statusFlow[currentStatus] || ["IN_PROGRESS", "RESOLVED"];
     }
 
     if (user?.role === "WARD_OFFICER") {
-      // Ward officers can assign and manage workflow
+      // Ward officers can manage full workflow except reopening
       return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CLOSED"];
     }
 
     if (user?.role === "ADMINISTRATOR") {
-      // Administrators can change to any status
+      // Administrators have full control over all statuses
       return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CLOSED", "REOPENED"];
     }
 
-    // Default fallback
-    return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CLOSED"];
+    // Default fallback for other roles
+    return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED"];
   };
 
   if (!complaint) {
