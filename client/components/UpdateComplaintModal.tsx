@@ -530,6 +530,11 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="status">Status</Label>
+              {user?.role === "MAINTENANCE_TEAM" && (
+                <p className="text-xs text-gray-500 mb-1">
+                  You can update status to In Progress or mark as Resolved
+                </p>
+              )}
               <Select
                 value={formData.status}
                 onValueChange={(value) => {
