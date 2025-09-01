@@ -519,6 +519,21 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
             </div>
           </div>
 
+          {/* Current Priority Display for Maintenance Team */}
+          {user?.role === "MAINTENANCE_TEAM" && (
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-600">Current Priority:</span>
+                <Badge className={getPriorityColor(complaint?.priority || "MEDIUM")}>
+                  {complaint?.priority || "MEDIUM"}
+                </Badge>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Maintenance team cannot change priority. Contact your supervisor if needed.
+              </p>
+            </div>
+          )}
+
           {/* Validation Errors */}
           {validationErrors.length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -537,7 +552,9 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
           )}
 
           {/* Status Update */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={`grid gap-4 ${
+            user?.role === "MAINTENANCE_TEAM" ? "grid-cols-1" : "grid-cols-2"
+          }`}>
             <div>
               <Label htmlFor="status">Status</Label>
               {user?.role === "MAINTENANCE_TEAM" && (
@@ -590,25 +607,51 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="priority">Priority</Label>
-              <Select
-                value={formData.priority}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, priority: value }))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="LOW">Low</SelectItem>
-                  <SelectItem value="MEDIUM">Medium</SelectItem>
-                  <SelectItem value="HIGH">High</SelectItem>
-                  <SelectItem value="CRITICAL">Critical</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Priority - Hidden for Maintenance Team */}
+            {user?.role !== "MAINTENANCE_TEAM" && (
+              <div>
+                <Label htmlFor="priority">Priority</Label>
+                <p className="text-xs text-gray-500 mb-1">
+                  Set complaint priority level
+                </p>
+                <Select
+                  value={formData.priority}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, priority: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="LOW">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                        Low
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="MEDIUM">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+                        Medium
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="HIGH">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                        High
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="CRITICAL">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                        Critical
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           {/* Assignment Section - Only for Ward Officers and Administrators */}
