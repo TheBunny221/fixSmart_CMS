@@ -429,11 +429,18 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center">
             <FileText className="h-5 w-5 mr-2" />
-            Update Complaint
+            {user?.role === "MAINTENANCE_TEAM"
+              ? "Update Task Status"
+              : user?.role === "WARD_OFFICER"
+              ? "Manage Complaint"
+              : "Update Complaint"}
           </DialogTitle>
           <DialogDescription>
-            Update the status and assignment of complaint #
-            {complaint.complaintId || complaint.id.slice(-6)}
+            {user?.role === "MAINTENANCE_TEAM"
+              ? `Update your work status for complaint #${complaint.complaintId || complaint.id.slice(-6)}`
+              : user?.role === "WARD_OFFICER"
+              ? `Assign and manage complaint #${complaint.complaintId || complaint.id.slice(-6)}`
+              : `Update the status and assignment of complaint #${complaint.complaintId || complaint.id.slice(-6)}`}
           </DialogDescription>
         </DialogHeader>
 
