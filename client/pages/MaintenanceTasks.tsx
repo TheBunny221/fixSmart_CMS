@@ -4,6 +4,7 @@ import { useAppSelector } from "../store/hooks";
 import {
   useGetComplaintsQuery,
   useUpdateComplaintStatusMutation,
+  useGetComplaintPhotosQuery,
 } from "../store/api/complaintsApi";
 import {
   Card,
@@ -45,6 +46,11 @@ import {
   ListTodo,
   AlertCircle,
   Upload,
+  ChevronDown,
+  ChevronUp,
+  Image,
+  FileText,
+  User,
 } from "lucide-react";
 
 const MaintenanceTasks: React.FC = () => {
@@ -58,6 +64,7 @@ const MaintenanceTasks: React.FC = () => {
   const [resolvePhoto, setResolvePhoto] = useState<File | null>(null);
   const [isPhotoUploadOpen, setIsPhotoUploadOpen] = useState(false);
   const [selectedTaskForPhotos, setSelectedTaskForPhotos] = useState<any>(null);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
   // Fetch complaints assigned to this maintenance team member
   const {
