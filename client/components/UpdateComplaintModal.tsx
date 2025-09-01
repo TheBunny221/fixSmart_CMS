@@ -35,6 +35,7 @@ import {
   FileText,
   Users,
   Settings,
+  RotateCcw,
 } from "lucide-react";
 
 interface Complaint {
