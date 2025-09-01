@@ -153,6 +153,25 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
   const validateForm = () => {
     const errors: string[] = [];
 
+    // Validate status transitions based on user role
+    const availableStatuses = getAvailableStatusOptions();
+    if (formData.status && !availableStatuses.includes(formData.status)) {
+      errors.push(
+        `You don't have permission to set status to '${formData.status}'. Available options: ${availableStatuses.join(", ")}`
+      );
+    }
+
+    // Role-specific validations
+    if (user?.role === "MAINTENANCE_TEAM") {
+      // Maintenance team specific validations
+      if (formData.status === "ASSIGNED" && complaint?.status !== "ASSIGNED") {
+        errors.push("Maintenance team cannot set status back to 'Assigned'.");
+      }
+      if (formData.status === "REGISTERED") {
+        errors.push("Maintenance team cannot set status to 'Registered'.");
+      }
+    }
+
     // Skip assignment validation for resolved and closed complaints
     const isComplaintFinalized = ["RESOLVED", "CLOSED"].includes(
       formData.status,
