@@ -241,8 +241,12 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
     try {
       const updateData: any = {
         status: formData.status,
-        priority: formData.priority,
       };
+
+      // Only include priority if user is not maintenance team
+      if (user?.role !== "MAINTENANCE_TEAM") {
+        updateData.priority = formData.priority;
+      }
 
       // For ward officers, use maintenanceTeamId
       if (user?.role === "WARD_OFFICER") {
