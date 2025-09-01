@@ -121,6 +121,7 @@ const MaintenanceTasks: React.FC = () => {
         latitude: complaint.latitude,
         longitude: complaint.longitude,
         complaintId: complaint.complaintId,
+        statusLogs: complaint.statusLogs || [],
       }));
     }
     if (Array.isArray((complaintsResponse as any)?.data)) {
@@ -248,6 +249,159 @@ const MaintenanceTasks: React.FC = () => {
   const handlePhotoUpload = (task: any) => {
     setSelectedTaskForPhotos(task);
     setIsPhotoUploadOpen(true);
+  };
+
+  // Toggle task expansion
+  const toggleTaskExpansion = (taskId: string) => {
+    setExpandedTaskId(expandedTaskId === taskId ? null : taskId);
+  };
+
+  // Work Progress Component
+  const TaskProgressSection: React.FC<{ task: any }> = ({ task }) => {
+    const {
+      data: photosResponse,
+      isLoading: isLoadingPhotos,
+      error: photosError,
+    } = useGetComplaintPhotosQuery(task.id);
+
+    const photos = photosResponse?.data?.photos || [];
+    const statusLogs = task.statusLogs || [];
+
+    // Combine photos and status logs into a timeline
+    const timelineItems = useMemo(() => {
+      const items = [];
+
+      // Add status logs
+      statusLogs.forEach((log: any) => {
+        items.push({
+          type: 'status',
+          timestamp: log.timestamp || log.createdAt,
+          content: log,
+        });
+      });
+
+      // Add photos
+      photos.forEach((photo: any) => {
+        items.push({
+          type: 'photo',
+          timestamp: photo.uploadedAt,
+          content: photo,
+        });
+      });
+
+      // Sort by timestamp (newest first)
+      return items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    }, [statusLogs, photos]);
+
+    if (isLoadingPhotos) {
+      return (
+        <div className="border-t bg-gray-50 p-4">
+          <div className="animate-pulse">
+            <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="border-t bg-gray-50 p-4">
+        <div className="flex items-center mb-3">
+          <FileText className="h-4 w-4 mr-2 text-gray-600" />
+          <h4 className="font-medium text-gray-800">Work Progress & Updates</h4>
+        </div>
+
+        {timelineItems.length === 0 ? (
+          <div className="text-center py-4 text-gray-500">
+            <Camera className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+            <p className="text-sm">No updates or photos yet</p>
+            <p className="text-xs">Upload photos and add progress notes as you work</p>
+          </div>
+        ) : (
+          <div className="space-y-3 max-h-80 overflow-y-auto">
+            {timelineItems.map((item, index) => (
+              <div key={index} className="border-l-2 border-blue-200 pl-4 pb-3">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-white rounded-full p-1 border shadow-sm">
+                    {item.type === 'photo' ? (
+                      <Image className="h-3 w-3 text-blue-600" />
+                    ) : (
+                      <User className="h-3 w-3 text-green-600" />
+                    )}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-xs text-gray-500">
+                        {new Date(item.timestamp).toLocaleString()}
+                      </p>
+                      {item.type === 'photo' && (
+                        <Badge variant="outline" className="text-xs">
+                          Photo
+                        </Badge>
+                      )}
+                    </div>
+
+                    {item.type === 'photo' ? (
+                      <div className="space-y-2">
+                        <div className="flex items-start space-x-3">
+                          <img
+                            src={item.content.photoUrl}
+                            alt="Work progress photo"
+                            className="w-16 h-16 object-cover rounded-lg border cursor-pointer hover:opacity-75 transition-opacity"
+                            onClick={() => handleViewPhoto(item.content.photoUrl)}
+                          />
+                          <div className="flex-1">
+                            <p className="text-sm text-gray-600 mb-1">
+                              Uploaded by {item.content.uploadedByTeam?.fullName || 'Team Member'}
+                            </p>
+                            {item.content.description && (
+                              <p className="text-sm text-gray-800 bg-white rounded p-2 border">
+                                {item.content.description}
+                              </p>
+                            )}
+                            <p className="text-xs text-gray-500 mt-1">
+                              {item.content.originalName} • {(item.content.size / 1024 / 1024).toFixed(1)}MB
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-2">
+                          <Badge className={getStatusColor(item.content.toStatus)} variant="secondary">
+                            {item.content.toStatus?.replace('_', ' ')}
+                          </Badge>
+                          {item.content.fromStatus && (
+                            <span className="text-xs text-gray-500">
+                              from {item.content.fromStatus.replace('_', ' ')}
+                            </span>
+                          )}
+                        </div>
+                        {item.content.comment && (
+                          <p className="text-sm text-gray-700 bg-white rounded p-2 border">
+                            {item.content.comment}
+                          </p>
+                        )}
+                        <p className="text-xs text-gray-500">
+                          by {item.content.user?.fullName || 'System'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {photosError && (
+          <div className="text-center py-2 text-red-500 text-sm">
+            Failed to load photos
+          </div>
+        )}
+      </div>
+    );
   };
 
   const getPriorityColor = (priority: string) => {
@@ -538,6 +692,18 @@ const MaintenanceTasks: React.FC = () => {
                         Add Photos
                       </Button>
                     )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => toggleTaskExpansion(task.id)}
+                    >
+                      {expandedTaskId === task.id ? (
+                        <ChevronUp className="h-3 w-3 mr-1" />
+                      ) : (
+                        <ChevronDown className="h-3 w-3 mr-1" />
+                      )}
+                      Progress
+                    </Button>
                   </div>
                   <div className="flex space-x-2">
                     {task.status === "ASSIGNED" && (
@@ -566,6 +732,10 @@ const MaintenanceTasks: React.FC = () => {
                     </Link>
                   </div>
                 </div>
+                {/* Work Progress Section */}
+                {expandedTaskId === task.id && (
+                  <TaskProgressSection task={task} />
+                )}
               </div>
             ))}
           </div>
