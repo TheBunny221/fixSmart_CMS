@@ -362,6 +362,45 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
     return "Select User";
   };
 
+  // Get available status options based on user role
+  const getAvailableStatusOptions = () => {
+    const currentStatus = complaint?.status;
+
+    if (user?.role === "MAINTENANCE_TEAM") {
+      // Maintenance team can only change to IN_PROGRESS and RESOLVED
+      const options = [];
+
+      // Allow current status to be selectable
+      if (currentStatus && ["ASSIGNED", "IN_PROGRESS", "RESOLVED"].includes(currentStatus)) {
+        options.push(currentStatus);
+      }
+
+      // Add progression options
+      if (currentStatus === "ASSIGNED") {
+        options.push("IN_PROGRESS");
+      }
+      if (["ASSIGNED", "IN_PROGRESS"].includes(currentStatus)) {
+        options.push("RESOLVED");
+      }
+
+      // Remove duplicates
+      return [...new Set(options)];
+    }
+
+    if (user?.role === "WARD_OFFICER") {
+      // Ward officers can assign and manage workflow
+      return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CLOSED"];
+    }
+
+    if (user?.role === "ADMINISTRATOR") {
+      // Administrators can change to any status
+      return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CLOSED", "REOPENED"];
+    }
+
+    // Default fallback
+    return ["REGISTERED", "ASSIGNED", "IN_PROGRESS", "RESOLVED", "CLOSED"];
+  };
+
   if (!complaint) {
     return null;
   }
@@ -502,36 +541,30 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="REGISTERED">
-                    <div className="flex items-center">
-                      <Clock className="h-4 w-4 mr-2" />
-                      Registered
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="ASSIGNED">
-                    <div className="flex items-center">
-                      <User className="h-4 w-4 mr-2" />
-                      Assigned
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="IN_PROGRESS">
-                    <div className="flex items-center">
-                      <Settings className="h-4 w-4 mr-2" />
-                      In Progress
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="RESOLVED">
-                    <div className="flex items-center">
-                      <CheckCircle className="h-4 w-4 mr-2" />
-                      Resolved
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="CLOSED">
-                    <div className="flex items-center">
-                      <FileText className="h-4 w-4 mr-2" />
-                      Closed
-                    </div>
-                  </SelectItem>
+                  {getAvailableStatusOptions().map((status) => {
+                    const statusConfig = {
+                      REGISTERED: { icon: Clock, label: "Registered" },
+                      ASSIGNED: { icon: User, label: "Assigned" },
+                      IN_PROGRESS: { icon: Settings, label: "In Progress" },
+                      RESOLVED: { icon: CheckCircle, label: "Resolved" },
+                      CLOSED: { icon: FileText, label: "Closed" },
+                      REOPENED: { icon: RotateCcw, label: "Reopened" },
+                    };
+
+                    const config = statusConfig[status];
+                    if (!config) return null;
+
+                    const IconComponent = config.icon;
+
+                    return (
+                      <SelectItem key={status} value={status}>
+                        <div className="flex items-center">
+                          <IconComponent className="h-4 w-4 mr-2" />
+                          {config.label}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
