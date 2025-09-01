@@ -787,10 +787,20 @@ const UpdateComplaintModal: React.FC<UpdateComplaintModalProps> = ({
 
           {/* Remarks */}
           <div>
-            <Label htmlFor="remarks">Remarks (Optional)</Label>
+            <Label htmlFor="remarks">
+              {user?.role === "MAINTENANCE_TEAM"
+                ? "Work Notes (Optional)"
+                : "Remarks (Optional)"}
+            </Label>
             <Textarea
               id="remarks"
-              placeholder="Add any additional comments or remarks about this update..."
+              placeholder={
+                user?.role === "MAINTENANCE_TEAM"
+                  ? "Add notes about work progress, issues encountered, or completion details..."
+                  : user?.role === "WARD_OFFICER"
+                  ? "Add notes about assignment, instructions, or status changes..."
+                  : "Add any additional comments or remarks about this update..."
+              }
               value={formData.remarks}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, remarks: e.target.value }))
